@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block content %}
+
+<h3>Filter</h3>
+{% include "./filter_form.html" %}
+<br />
+<br />
+<h3>Matched Listings</h3>
+<ul>
+  {% for listing in listings %}
+  <li>{{ listing.title }}</li>
+  {% empty %}
+  <p>No listings found.</p>
+  {% endfor %}
+</ul>
+
+{% endblock%}
