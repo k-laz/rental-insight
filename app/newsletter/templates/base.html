@@ -1,17 +1,33 @@
-{% load static %}:
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Landing Page</title>
+    <title>Rental Insight</title>
     <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
     />
+    <link
+      rel="shortcut icon"
+      href="{% static 'newsletter/images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="{% static 'newsletter/css/styles.css' %}">
   </head>
   <body>
+    <header>
+      <a href="{% url 'newsletter:index' %}">
+        <img
+          src="{% static 'newsletter/images/logo.png' %}"
+          alt="Logo"
+          height="50"
+        />
+      </a>
+      <a href="{% url 'newsletter:profile' %}" class="profile-link">Profile</a>
+    </header>
     <div class="container">{% block content%}{% endblock %}</div>
 
     <!-- Optional JavaScript and Bootstrap JS -->

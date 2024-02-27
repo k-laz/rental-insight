@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import FilterForm
-
+from django.contrib.auth.models import AnonymousUser
 
 def login_user(request):
     return render(request, 'newsletter/login.html', {})
@@ -15,13 +15,28 @@ def index(request):
     return render(request, 'newsletter/index.html', {})
 
 
-def sign_up(request):
+def signup(request):
     return HttpResponse("Sign up page")
 
+def login(request):
+    if request.method == "POST":
+        username = request.POST["username"]
+        password = request.POST["password"]
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('newsletter:profile')
+        else:
+            return HttpResponse("Failed to login")
+    
+    return HttpResponse("Log In")
 
 def profile(request):
-    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+    if not request.user.is_authenticated:
+        return HttpResponse(loader.get_template("newsletter/login.html").render({}, request))
     
+    user_profile = UserProfile.objects.get(user=request.user)
+
     try:
         user_filter = user_profile.filter
     except Filter.DoesNotExist:
