@@ -11,19 +11,24 @@
   font-weight: bold; /* Optional: makes the link text bold */
 }
 
+html {
+  height: 100%;
+}
+
 body {
   background-color: #f8f9fa; /* Light grey background */
+  height: 100vh !important;
 }
 
 .form-signup {
   background: #ffffff;
-  padding: 20px;
+  padding: 15px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-signup .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 .form-signup .btn-primary {
@@ -35,4 +40,17 @@ body {
   float: right;
   margin-right: 20px;
   margin-top: 15px;
+  text-decoration: none;
+}
+
+.profile-link:hover {
+  color: #007bff;
+}
+
+.footer {
+  position: absolute;
+  bottom: 10px; /* Distance from bottom */
+  padding: 10px 0; /* Example padding */
+  text-align: center; /* Centers the footer content */
+  width: 100%;
 }

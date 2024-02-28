@@ -7,28 +7,9 @@
     time.
   </p>
   <div class="container my-5">
-  <div class="border rounded p-4 mx-auto" style="max-width: 600px;">
-    {% include "./signup_form.html" %}
-  </div>
-</div>
-  
-  {% comment %} <div class="text-center my-5">
-  <form action="{% url 'newsletter:signup' %}" method="post">
-    {% csrf_token %}
-    <div class="form-group">
-      <label for="emailInput" class="sr-only">Email address</label>
-      <input
-        type="email"
-        class="form-control"
-        id="emailInput"
-        placeholder="Enter email"
-        name="email"
-        required
-      />
+    <div class="border rounded p-4 mx-auto" style="max-width: 600px;">
+      {% include "./register_form.html" %}
     </div>
-    <button type="submit" class="btn btn-success">Sign Up</button>
-  </form>
-</div> {% endcomment %}
-  {% comment %} <a class="btn btn-success"  href="{% url 'newsletter:profile' %}" class="profile-link">Subscribe</a> {% endcomment %}
+  </div>
 </div>
 {% endblock %}

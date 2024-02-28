@@ -2,8 +2,17 @@
 {% block title %}Login{% endblock %} 
 {% block content%}
 <h2>Log In</h2>
-<form action="{% url 'newsletter:login' %}" method="post">
-  {% csrf_token %} {{ form }}
-  <button type="submit">Log In</button>
+<form action="{% url 'newsletter:login_user' %}" method="post">
+  {% csrf_token %}
+      <div class="form-group">
+        <label for="emailInput" class="sr-only">Email address</label>
+        <input type="email" class="form-control" id="emailInput" placeholder="Enter email" name="email" required />
+    </div>
+
+    <div class="form-group">
+        <label for="passwordInput" class="sr-only">Password</label>
+        <input type="password" class="form-control" id="passwordInput" placeholder="Enter password" name="password" required />
+    </div>
+  <button type="submit" class="btn btn-success">Log In</button>
 </form>
 {% endblock %}

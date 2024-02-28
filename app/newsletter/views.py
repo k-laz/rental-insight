@@ -2,34 +2,46 @@ from django.http import HttpResponse
 from django.template import loader
 from .models import UserProfile, Filter
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import FilterForm
-from django.contrib.auth.models import AnonymousUser
-
-def login_user(request):
-    return render(request, 'newsletter/login.html', {})
+from django.contrib.auth.forms import UserCreationForm
 
 
 def index(request):
-    return render(request, 'newsletter/index.html', {})
+    return render(request, 'newsletter/index.html', {"form": UserCreationForm()})
 
 
-def signup(request):
-    return HttpResponse("Sign up page")
-
-def login(request):
+def register_user(request):
     if request.method == "POST":
-        username = request.POST["username"]
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(username=username, password=password)
+            login(request, user)
+            messages.success(request, ("Registration Successfull!"))
+            return redirect('newsletter:profile')
+
+
+
+def logout_user(request):
+    pass
+
+def login_user(request):
+    if request.method == "POST":
+        email = request.POST["email"]
         password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('newsletter:profile')
         else:
-            return HttpResponse("Failed to login")
+            messages.success(request, ("There was an error loggin in, try again..."))
+            return redirect('newsletter:profile')
     
-    return HttpResponse("Log In")
+    return HttpResponse("Error")
 
 def profile(request):
     if not request.user.is_authenticated:
