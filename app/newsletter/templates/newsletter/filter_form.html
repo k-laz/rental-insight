@@ -1,4 +1,70 @@
-<form method="post">
-  {% csrf_token %} {{ form.as_p }}
-  <button type="submit">Save</button>
+<form action="{% url 'newsletter:register_filter' %}" method="post" class="form-filter">
+    {% csrf_token %}
+
+    <!-- Max Price -->
+    <div class="form-group row">
+        <label for="maxPriceInput" class="col-sm-4 col-form-label">Max Price</label>
+        <div class="col-sm-8">
+            <input type="number" class="form-control" id="maxPriceInput" name="max_price" min="0" required />
+        </div>
+    </div>
+
+    <!-- Min Beds -->
+    <div class="form-group row">
+        <label for="minBedsInput" class="col-sm-4 col-form-label">Min Beds</label>
+        <div class="col-sm-8">
+            <input type="number" class="form-control" id="minBedsInput" name="min_beds" min="0" required />
+        </div>
+    </div>
+
+    <!-- Min Bathrooms -->
+    <div class="form-group row">
+        <label for="minBathroomsInput" class="col-sm-4 col-form-label">Min Bathrooms</label>
+        <div class="col-sm-8">
+            <input type="number" class="form-control" id="minBathroomsInput" name="min_bathrooms" min="0" required />
+        </div>
+    </div>
+
+    <!-- Move-in Date -->
+    <div class="form-group row">
+        <label for="moveInDateInput" class="col-sm-4 col-form-label">Move-in Date</label>
+        <div class="col-sm-8">
+            <input type="date" class="form-control" id="moveInDateInput" name="move_in_date" required />
+        </div>
+    </div>
+
+    <!-- Length of Stay -->
+    <div class="form-group row">
+        <label for="lengthOfStaySelect" class="col-sm-4 col-form-label">Length of Stay</label>
+        <div class="col-sm-8">
+            <select class="form-control" id="lengthOfStaySelect" name="length_of_stay">
+                <option value="4">4 months</option>
+                <option value="8">8 months</option>
+                <option value="12">12 months</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Gender -->
+    <div class="form-group row">
+        <label for="genderSelect" class="col-sm-4 col-form-label">Gender</label>
+        <div class="col-sm-8">
+            <select class="form-control" id="genderSelect" name="gender">
+                <option value="0">Male</option>
+                <option value="1">Female</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Private Bathroom -->
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label" for="personalBathroomCheckbox">Private Bathroom</label>
+        <div class="col-sm-8 d-flex align-items-center">
+            <input type="checkbox" class="form-check-input" id="personalBathroomCheckbox" name="personal_bathroom">
+            <label class="form-check-label ml-3" for="personalBathroomCheckbox">Yes</label>
+        </div>
+    </div>
+
+
+    <button type="submit" class="btn btn-success">Update</button>
 </form>

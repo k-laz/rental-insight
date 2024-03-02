@@ -20,18 +20,18 @@ body {
   height: 100vh !important;
 }
 
-.form-signup {
+.form-filter {
   background: #ffffff;
   padding: 15px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.form-signup .form-group {
+.form-filter .form-group {
   margin-bottom: 10px;
 }
 
-.form-signup .btn-primary {
+.form-filter .btn-primary {
   background-color: #007bff;
   border: none;
 }

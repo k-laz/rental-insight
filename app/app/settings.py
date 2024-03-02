@@ -34,6 +34,7 @@ LOGIN_REDIRECT_URL = "/"
 
 INSTALLED_APPS = [
     'newsletter.apps.NewsletterConfig',
+    'members.apps.MembersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

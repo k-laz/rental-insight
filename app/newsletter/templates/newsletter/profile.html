@@ -1,8 +1,7 @@
 {% extends "base.html" %} 
-{% block content %} 
-{% if user.is_authenticated %}
+{% block content %}
   <p>You are logged in</p>
-  <form action="{% url 'newsletter:logout' %}" method="post">
+  <form action="{% url 'members:logout_user' %}" method="post">
     {% csrf_token %}
     <button type="submit">Log Out</button>
   </form>
@@ -18,7 +17,4 @@
       <p>No listings found.</p>
     {% endfor %}
   </ul>
-{% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'newsletter:login' %}">Log In</a>
-{% endif %} {% endblock%}
+{% endblock%}

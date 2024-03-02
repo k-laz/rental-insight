@@ -20,6 +20,7 @@ from django.views.generic.base import TemplateView, RedirectView
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("newsletter/", include("newsletter.urls")),
-    path('newsletter/', include('django.contrib.auth.urls')),
+    path('members/', include('django.contrib.auth.urls')),
+    path('members/', include('members.urls')),
     path('', RedirectView.as_view(url='newsletter/', permanent=True)),
 ]
