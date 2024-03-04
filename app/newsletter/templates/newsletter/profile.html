@@ -1,10 +1,13 @@
 {% extends "base.html" %} 
 {% block content %}
-  <p>You are logged in</p>
+  <p>Welcome <b>{{user.email}}</b></p> 
+
   <form action="{% url 'members:logout_user' %}" method="post">
     {% csrf_token %}
     <button type="submit">Log Out</button>
   </form>
+  <br />
+  <br />
   <h3>Filter</h3>
   {% include "./filter_form.html" %}
   <br />

@@ -1,70 +1,70 @@
-<form action="{% url 'newsletter:register_filter' %}" method="post" class="form-filter">
+<form action="{% url 'newsletter:profile' %}" method="post" class="form-filter">
     {% csrf_token %}
+
+    <!-- Display form errors -->
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
 
     <!-- Max Price -->
     <div class="form-group row">
-        <label for="maxPriceInput" class="col-sm-4 col-form-label">Max Price</label>
+        <label for="{{ form.max_price.id_for_label }}" class="col-sm-4 col-form-label">{{ form.max_price.label }}</label>
         <div class="col-sm-8">
-            <input type="number" class="form-control" id="maxPriceInput" name="max_price" min="0" required />
+            {{ form.max_price }}
         </div>
     </div>
 
     <!-- Min Beds -->
     <div class="form-group row">
-        <label for="minBedsInput" class="col-sm-4 col-form-label">Min Beds</label>
+        <label for="{{ form.min_beds.id_for_label }}" class="col-sm-4 col-form-label">{{ form.min_beds.label }}</label>
         <div class="col-sm-8">
-            <input type="number" class="form-control" id="minBedsInput" name="min_beds" min="0" required />
+            {{ form.min_beds }}
         </div>
     </div>
 
     <!-- Min Bathrooms -->
     <div class="form-group row">
-        <label for="minBathroomsInput" class="col-sm-4 col-form-label">Min Bathrooms</label>
+        <label for="{{ form.min_bathrooms.id_for_label }}" class="col-sm-4 col-form-label">{{ form.min_bathrooms.label }}</label>
         <div class="col-sm-8">
-            <input type="number" class="form-control" id="minBathroomsInput" name="min_bathrooms" min="0" required />
+            {{ form.min_bathrooms }}
         </div>
     </div>
 
     <!-- Move-in Date -->
     <div class="form-group row">
-        <label for="moveInDateInput" class="col-sm-4 col-form-label">Move-in Date</label>
+        <label for="{{ form.move_in_date.id_for_label }}" class="col-sm-4 col-form-label">{{ form.move_in_date.label }}</label>
         <div class="col-sm-8">
-            <input type="date" class="form-control" id="moveInDateInput" name="move_in_date" required />
+            {{ form.move_in_date }}
         </div>
     </div>
 
     <!-- Length of Stay -->
     <div class="form-group row">
-        <label for="lengthOfStaySelect" class="col-sm-4 col-form-label">Length of Stay</label>
+        <label for="{{ form.length_of_stay.id_for_label }}" class="col-sm-4 col-form-label">{{ form.length_of_stay.label }}</label>
         <div class="col-sm-8">
-            <select class="form-control" id="lengthOfStaySelect" name="length_of_stay">
-                <option value="4">4 months</option>
-                <option value="8">8 months</option>
-                <option value="12">12 months</option>
-            </select>
+            {{ form.length_of_stay }}
         </div>
     </div>
 
     <!-- Gender -->
     <div class="form-group row">
-        <label for="genderSelect" class="col-sm-4 col-form-label">Gender</label>
+        <label for="{{ form.gender.id_for_label }}" class="col-sm-4 col-form-label">{{ form.gender.label }}</label>
         <div class="col-sm-8">
-            <select class="form-control" id="genderSelect" name="gender">
-                <option value="0">Male</option>
-                <option value="1">Female</option>
-            </select>
+            {{ form.gender }}
         </div>
     </div>
 
-    <!-- Private Bathroom -->
+    <!-- Personal Bathroom -->
     <div class="form-group row">
-        <label class="col-sm-4 col-form-label" for="personalBathroomCheckbox">Private Bathroom</label>
-        <div class="col-sm-8 d-flex align-items-center">
-            <input type="checkbox" class="form-check-input" id="personalBathroomCheckbox" name="personal_bathroom">
-            <label class="form-check-label ml-3" for="personalBathroomCheckbox">Yes</label>
+        <label for="{{ form.personal_bathroom.id_for_label }}" class="col-sm-4 col-form-label">{{ form.personal_bathroom.label }}</label>
+        <div class="col-sm-8">
+            {{ form.personal_bathroom }}
         </div>
     </div>
-
 
     <button type="submit" class="btn btn-success">Update</button>
 </form>

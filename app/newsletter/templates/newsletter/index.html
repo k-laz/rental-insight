@@ -13,15 +13,6 @@
     It’s free! If it's not providing value you are free to unsubscribe at any
     time.
   </p>
-  <div class="container my-5">
-      
-    <div class="border rounded p-4 mx-auto" style="max-width: 600px;">
-      
-      <form action="{% url 'members:register_user' %}" method="POST">
-        {% csrf_token %} {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Subscribe</button>
-      </form>
-    </div>
-  </div>
+  <a class="btn btn-primary" href="{% url 'members:register_user' %}" role="button">Subscribe</a>
 </div>
 {% endblock %}

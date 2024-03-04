@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
 from .forms import RegisterUserForm
 
 def login_user(request):
@@ -36,5 +35,8 @@ def register_user(request):
 			login(request, user)
 			messages.success(request, ("Registration Successful!"))
 			return redirect('newsletter:profile')
+		else:
+			messages.success(request, ("There was an error signing up, Try Again..."))	
+			return redirect('members:register_user')	
 
 	return render(request, 'members/register_user.html', {'form':RegisterUserForm()})

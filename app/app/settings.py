@@ -29,6 +29,8 @@ ALLOWED_HOSTS = []
 
 LOGIN_REDIRECT_URL = "/"
 
+AUTH_USER_MODEL = "members.CustomUser"
+
 
 # Application definition
 
