@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import loader
 
 from members.models import CustomUser
-from .models import UserProfile, Filter, Listing
+from .models import UserProfile, Filter, Listing, Neighbourhood
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -53,24 +53,18 @@ def profile(request):
         'WEEK': 7,
         'DAY': 1,
     }
-    if user_filter is not None:
-        listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH'])
-    else:
-        listings = []
+    listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH']) if user_filter else []
     
     template = loader.get_template("newsletter/profile.html")
     context = {
         "listings": listings,
         "form": form,
         "user": user_profile.user,
+        "neighbourhoods": Neighbourhood.objects.all(),
     }
     return HttpResponse(template.render(context, request))
 
-def register_filter(request):
-    pass
 
-def update_listings(user, filter):
-    pass    
 
 from django.utils import timezone
 from datetime import timedelta
@@ -101,13 +95,13 @@ def get_matching_listings(search_filter, timeframe):
     # user_neighbourhood_ids = search_filter.neighbourhoods.values_list('id', flat=True)
     # listings = listings.filter(neighbourhood__id__in=user_neighbourhood_ids)
     if search_filter.neighbourhoods.exists():  # Checking if there are any neighbourhoods selected in the filter
-        listings = listings.filter(neighbourhoods__in=search_filter.neighbourhoods.all())
+        listings = listings.filter(parameters__neighbourhoods__in=search_filter.neighbourhoods.all())
 
     
     return listings
 
 
-from django.core.mail import send_mail, send_mass_mail
+from django.core.mail import send_mail
 def send_email(request):
     users = CustomUser.objects.all()
 

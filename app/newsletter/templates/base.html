@@ -16,31 +16,38 @@
       type="image/x-icon"
     />
     <link rel="stylesheet" href="{% static 'newsletter/css/styles.css' %}">
-    <link href="https://cdn.jsdelivr.net/npm/select2/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2/dist/js/select2.min.js"></script>
+    {% comment %} <link href="https://cdn.jsdelivr.net/npm/select2/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2/dist/js/select2.min.js"></script> {% endcomment %}
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
   </head>
   <body>
-    <header>
-      <a href="{% url 'newsletter:index' %}">
-        <img
-          src="{% static 'newsletter/images/logo.png' %}"
-          alt="Logo"
-          height="50"
-        />
-      </a>
-      <a href="{% url 'newsletter:profile' %}" class="profile-link">Profile</a>
-    </header>
-    <div class="container">
-      {% if messages %}
-        {% for message in messages %}
-          <div class="alert alert-warning" role="alert">
-            {{ message }}
-          </div>
-        {% endfor %}
-      {% endif %}
-      {% block content%}{% endblock %}
-    </div>
+    <div class="content-wrapper">
+      <header>
+        <a href="{% url 'newsletter:index' %}">
+          <img
+            src="{% static 'newsletter/images/logo.png' %}"
+            alt="Logo"
+            height="50"
+          />
+        </a>
+        <a href="{% url 'newsletter:profile' %}" class="profile-link">Profile</a>
+      </header>
 
+      <div class="container">
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-warning" role="alert">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        {% block content%}{% endblock %}
+      </div>
+    </div>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
             <span class="text-muted">@ Rental Insight</span>

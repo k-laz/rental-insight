@@ -1,23 +1,41 @@
-.header-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 10px; /* Adjusts padding on the sides */
-}
-
-.profile-link {
-  text-decoration: none;
-  color: #000; /* Or any color you prefer */
-  font-weight: bold; /* Optional: makes the link text bold */
-}
-
 html {
   height: 100%;
 }
 
 body {
-  background-color: #f8f9fa; /* Light grey background */
-  height: 100vh !important;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  flex: 1;
+}
+
+.footer {
+  position: relative;
+  bottom: 10px;
+  padding: 10px 0;
+  text-align: center;
+  width: 100%;
+}
+
+.btn-check {
+  display: none;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.profile-link {
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
 }
 
 .form-filter {
@@ -45,12 +63,4 @@ body {
 
 .profile-link:hover {
   color: #007bff;
-}
-
-.footer {
-  position: absolute;
-  bottom: 10px; /* Distance from bottom */
-  padding: 10px 0; /* Example padding */
-  text-align: center; /* Centers the footer content */
-  width: 100%;
 }

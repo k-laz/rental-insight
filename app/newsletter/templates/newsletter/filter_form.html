@@ -56,22 +56,90 @@
             {{ form.personal_bathroom }}
         </div>
     </div>
+{% comment %} 
+    <script>
+    $(document).ready(function() {
+        // Initialize Select2 on the hidden select
+        $('#id_neighbourhoods').select2({
+            placeholder: "Select neighborhoods",
+            allowClear: true
+        });
+
+        // Function to sync checkboxes with the hidden select
+        function syncCheckboxes() {
+            var selectedOptions = $('.btn-check:checked').map(function() {
+                return this.value;
+            }).get();
+            $('#id_neighbourhoods').val(selectedOptions).trigger('change');
+        }
+
+        // Listen for changes on checkboxes with class 'btn-check'
+        $('.btn-check').change(function() {
+            // Toggle 'active' class for the label of the changed checkbox
+            $('label[for="' + this.id + '"]').toggleClass('active', $(this).is(':checked'));
+
+            // Sync checkboxes with the hidden select element
+            syncCheckboxes();
+        });
+
+        // Initial sync and class toggle on page load
+        $('.btn-check').each(function() {
+            $('label[for="' + this.id + '"]').toggleClass('active', $(this).is(':checked'));
+        }).change(); // Trigger change to ensure initial synchronization
+    });
+    </script>        {% endcomment %}
+
+<script>
+$(document).ready(function() {
+    // Listen for clicks on labels associated with the checkboxes
+    $('label[for^="btncheck"]').click(function() {
+        // Extract the corresponding checkbox ID from the 'for' attribute of the label
+        var checkboxId = $(this).attr('for');
+        var checkbox = $('#' + checkboxId);
+
+        // Check if the checkbox is checked or not after the click
+        // Note: The actual change happens after this event, so we use setTimeout to get the new state
+        setTimeout(function() {
+            var isChecked = checkbox.is(':checked');
+            // Toggle 'active' class based on the checkbox's checked state
+            // This is assuming you want to visually indicate the button's (label's) active state
+            $('label[for="' + checkboxId + '"]').toggleClass('active', isChecked);
+
+            // Perform other actions based on isChecked value
+            console.log(checkboxId + " is checked: " + isChecked);
+
+            // Since you're synchronizing with a hidden select, trigger that synchronization here
+            // Function call to sync checkboxes with the hidden select (as previously defined)
+            syncCheckboxes();
+        }, 0);
+    });
+
+    // Your existing syncCheckboxes function
+    function syncCheckboxes() {
+        var selectedOptions = $('.btn-check:checked').map(function() {
+            return this.value;
+        }).get();
+        $('#id_neighbourhoods').val(selectedOptions).trigger('change');
+    }
+});
+</script>
+
+
+   <select id="id_neighbourhoods" multiple="multiple" name="neighbourhoods" style="display:none;">
+        {% for neighbourhood in neighbourhoods %}
+            <option value="{{ neighbourhood.id }}">{{ neighbourhood.name }}</option>
+        {% endfor %}
+    </select>
 
     <div class="form-group row">
         <label class="col-sm-4 col-form-label">Neighbourhoods</label>
-        <div class="col-sm-8">
-            {{ form.neighbourhoods }}
+        <div class="col-sm-8" role="group" aria-label="Basic checkbox toggle button group">
+            {% for neighbourhood in neighbourhoods %}
+                <input type="checkbox" class="btn-check" id="btncheck{{ neighbourhood.id }}" value="{{ neighbourhood.id }}" autocomplete="off" style="display:none;">
+                <label class="btn btn-outline-primary" for="btncheck{{ neighbourhood.id }}">{{ neighbourhood.name }}</label>
+            {% endfor %}
         </div>
     </div>
-
-    <script>
-        $(document).ready(function() {
-            $('#id_neighbourhoods').select2({
-                placeholder: "Select neighbourhoods",
-                allowClear: true
-            });
-        });
-    </script>
 
     <button type="submit" class="btn btn-success">Update</button>
 </form>
