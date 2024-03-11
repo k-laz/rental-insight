@@ -60,7 +60,8 @@ ROOT_URLCONF = 'app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'newsletter/templates'],
+        # 'DIRS': [ BASE_DIR / 'newsletter/templates'],
+        "DIRS": [BASE_DIR / "templates"],  # new
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -130,3 +131,12 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Test backend:
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'  
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
+# EMAIL_HOST_USER = 'AKIAZ2QNUDDIWE25V7NK'
+# EMAIL_HOST_PASSWORD = 'BBKxMGqqXrc3u8/bNNvA1WB9wAyJk4yAJChg9zhPZUM4'
