@@ -28,7 +28,8 @@ class Filter(models.Model):
     class Gender(models.IntegerChoices):
         MALE = 0, 'male'
         FEMALE = 1, 'female'
-    gender = models.IntegerField(choices=Gender.choices, default=Gender.MALE)
+        EITHER = 2, 'either'
+    gender = models.IntegerField(choices=Gender.choices, default=Gender.EITHER)
 
     neighbourhoods = models.ManyToManyField(Neighbourhood, blank=True)
 

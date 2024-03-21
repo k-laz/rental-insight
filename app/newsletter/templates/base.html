@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Rental Insight{% endblock %}</title>
-    <!-- Bootstrap CSS -->
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -16,8 +15,6 @@
       type="image/x-icon"
     />
     <link rel="stylesheet" href="{% static 'newsletter/css/styles.css' %}">
-    {% comment %} <link href="https://cdn.jsdelivr.net/npm/select2/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2/dist/js/select2.min.js"></script> {% endcomment %}
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
@@ -27,16 +24,22 @@
   <body>
     <div class="content-wrapper">
       <header>
-        <a href="{% url 'newsletter:index' %}">
+        <a href="{% url 'newsletter:home' %}">
           <img
             src="{% static 'newsletter/images/logo.png' %}"
             alt="Logo"
-            height="50"
+            height="65"
           />
         </a>
-        <a href="{% url 'newsletter:profile' %}" class="profile-link">Profile</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'newsletter:profile' %}" class="profile-link">Profile</a>
+        {% else %}
+          <a href="{% url 'newsletter:profile' %}" class="profile-link">Login</a>
+        {% endif %}
+        
       </header>
 
+      {% block home_page%}{% endblock %}
       <div class="container">
         {% if messages %}
           {% for message in messages %}
@@ -55,7 +58,7 @@
     </footer>
 
     <!-- Optional JavaScript and Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    {% comment %} <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>

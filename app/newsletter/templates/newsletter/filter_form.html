@@ -56,74 +56,62 @@
             {{ form.personal_bathroom }}
         </div>
     </div>
-{% comment %} 
+
     <script>
-    $(document).ready(function() {
-        // Initialize Select2 on the hidden select
-        $('#id_neighbourhoods').select2({
-            placeholder: "Select neighborhoods",
-            allowClear: true
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const savedNeighborhoods = JSON.parse('{{ user_hoods|safe }}');
+            const savedNeighborhoodIDs = savedNeighborhoods.map(neighborhood => neighborhood.id);
+            document.querySelectorAll('.btn-check').forEach(checkbox => {
+                if (savedNeighborhoodIDs.includes(parseInt(checkbox.value, 10))) {
+                    checkbox.checked = true;
+                    // Manually add 'active' class to the corresponding label
+                    document.querySelector(`label[for="${checkbox.id}"]`).classList.add('active');
+                }
+            });
+
+            // Call syncCheckboxes to ensure the select element is updated to reflect the checkboxes
+            syncCheckboxes();
+
+
+            document.querySelectorAll('label[for^="btncheck"]').forEach(label => {
+                label.addEventListener('click', function() {
+                    // This assumes the 'for' attribute correctly references a checkbox id.
+                    let checkboxId = this.getAttribute('for');
+                    let checkbox = document.getElementById(checkboxId);
+
+                    // Wait for the default checkbox toggle action to complete.
+                    setTimeout(() => {
+                        // Toggle 'active' class based on checkbox state.
+                        if (checkbox.checked) {
+                            this.classList.add('active');
+                        } else {
+                            this.classList.remove('active');
+                        }
+
+                        // Assuming syncCheckboxes is now a function using vanilla JS.
+                        syncCheckboxes();
+                    }, 0);
+                });
+            });
         });
 
-        // Function to sync checkboxes with the hidden select
         function syncCheckboxes() {
-            var selectedOptions = $('.btn-check:checked').map(function() {
-                return this.value;
-            }).get();
-            $('#id_neighbourhoods').val(selectedOptions).trigger('change');
+            // Assuming we're syncing to a select element with id 'id_neighbourhoods'.
+            let selectedOptions = [];
+            document.querySelectorAll('.btn-check:checked').forEach(checkbox => {
+                selectedOptions.push(checkbox.value);
+            });
+
+            let select = document.getElementById('id_neighbourhoods');
+            Array.from(select.options).forEach(option => {
+                option.selected = selectedOptions.includes(option.value);
+            });
+
+            // If you're using a library like Select2 that needs to be manually updated
+            // after changing the select element, you would trigger that update here.
         }
 
-        // Listen for changes on checkboxes with class 'btn-check'
-        $('.btn-check').change(function() {
-            // Toggle 'active' class for the label of the changed checkbox
-            $('label[for="' + this.id + '"]').toggleClass('active', $(this).is(':checked'));
-
-            // Sync checkboxes with the hidden select element
-            syncCheckboxes();
-        });
-
-        // Initial sync and class toggle on page load
-        $('.btn-check').each(function() {
-            $('label[for="' + this.id + '"]').toggleClass('active', $(this).is(':checked'));
-        }).change(); // Trigger change to ensure initial synchronization
-    });
-    </script>        {% endcomment %}
-
-<script>
-$(document).ready(function() {
-    // Listen for clicks on labels associated with the checkboxes
-    $('label[for^="btncheck"]').click(function() {
-        // Extract the corresponding checkbox ID from the 'for' attribute of the label
-        var checkboxId = $(this).attr('for');
-        var checkbox = $('#' + checkboxId);
-
-        // Check if the checkbox is checked or not after the click
-        // Note: The actual change happens after this event, so we use setTimeout to get the new state
-        setTimeout(function() {
-            var isChecked = checkbox.is(':checked');
-            // Toggle 'active' class based on the checkbox's checked state
-            // This is assuming you want to visually indicate the button's (label's) active state
-            $('label[for="' + checkboxId + '"]').toggleClass('active', isChecked);
-
-            // Perform other actions based on isChecked value
-            console.log(checkboxId + " is checked: " + isChecked);
-
-            // Since you're synchronizing with a hidden select, trigger that synchronization here
-            // Function call to sync checkboxes with the hidden select (as previously defined)
-            syncCheckboxes();
-        }, 0);
-    });
-
-    // Your existing syncCheckboxes function
-    function syncCheckboxes() {
-        var selectedOptions = $('.btn-check:checked').map(function() {
-            return this.value;
-        }).get();
-        $('#id_neighbourhoods').val(selectedOptions).trigger('change');
-    }
-});
-</script>
-
+    </script>
 
    <select id="id_neighbourhoods" multiple="multiple" name="neighbourhoods" style="display:none;">
         {% for neighbourhood in neighbourhoods %}

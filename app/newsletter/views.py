@@ -4,14 +4,17 @@ from django.template import loader
 from members.models import CustomUser
 from .models import UserProfile, Filter, Listing, Neighbourhood
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import FilterForm
 from django.contrib.auth.forms import UserCreationForm
+from django.utils import timezone
+from datetime import timedelta
+
+import json
 
 
-def index(request):
-    return render(request, 'index.html', {"form": UserCreationForm()})
+def home(request):
+    return render(request, 'home.html', {"form": UserCreationForm()})
 
 
 def profile(request):
@@ -54,6 +57,7 @@ def profile(request):
         'DAY': 1,
     }
     listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH']) if user_filter else []
+    user_neighbourhoods = list(user_filter.neighbourhoods.values('id', 'name')) if user_filter else []
     
     template = loader.get_template("newsletter/profile.html")
     context = {
@@ -61,13 +65,10 @@ def profile(request):
         "form": form,
         "user": user_profile.user,
         "neighbourhoods": Neighbourhood.objects.all(),
+        "user_hoods": json.dumps(user_neighbourhoods)
     }
     return HttpResponse(template.render(context, request))
 
-
-
-from django.utils import timezone
-from datetime import timedelta
 
 # return a list of listings that matches the given filter (past month, past week, today)
 def get_matching_listings(search_filter, timeframe):
@@ -76,29 +77,14 @@ def get_matching_listings(search_filter, timeframe):
     :param search_filter: An instance of the Filter model containing search criteria.
     :return: A queryset of Listing instances matching the search criteria.
     """
-
     time_filter = timezone.now() - timedelta(days=timeframe)
     listings = Listing.objects.filter(pub_date__gte=time_filter)
+    res = []
+    for listing in listings:
+        if matches_user_filter(search_filter, listing.parameters):
+            res.append(listing)
 
-    listings = listings.filter(
-        parameters__max_price__lte=search_filter.max_price,
-        parameters__personal_bathroom=search_filter.personal_bathroom,
-        parameters__min_beds__gte=search_filter.min_beds,
-        parameters__min_bathrooms__gte=search_filter.min_bathrooms,
-        parameters__gender=search_filter.gender,
-        parameters__furnished=search_filter.furnished,
-    )
-
-    # Filter by neighbourhoods included in the user's filter
-    # Assuming each listing is directly associated with a Neighbourhood
-    # Or you can adjust this logic if the association is through the parameters field
-    # user_neighbourhood_ids = search_filter.neighbourhoods.values_list('id', flat=True)
-    # listings = listings.filter(neighbourhood__id__in=user_neighbourhood_ids)
-    if search_filter.neighbourhoods.exists():  # Checking if there are any neighbourhoods selected in the filter
-        listings = listings.filter(parameters__neighbourhoods__in=search_filter.neighbourhoods.all())
-
-    
-    return listings
+    return res
 
 
 from django.core.mail import send_mail
@@ -122,7 +108,6 @@ def send_email(request):
 
 
 from collections import defaultdict
-
 def send_aggregated_daily_newsletters(request):
     # Step 1: Fetch Listings from the past 24 hours
     yesterday = timezone.now() - timedelta(days=1)
@@ -144,18 +129,22 @@ def send_aggregated_daily_newsletters(request):
     
     return HttpResponse("done")
 
-def matches_user_filter(user_filter, listing_parameters):
+def matches_user_filter(user_filter: Filter, listing_parameters: Filter):
     # Implement the logic to check if a listing's parameters match the user's filter
     # This is a simplified check; adjust according to your filter fields and requirements
+    preferred_neighborhood_ids = user_filter.neighbourhoods.values_list('id', flat=True)
+
     return (
         (user_filter.max_price >= listing_parameters.max_price) and
         (not user_filter.personal_bathroom or (user_filter.personal_bathroom and listing_parameters.personal_bathroom)) and
         (user_filter.min_beds <= listing_parameters.min_beds) and
         (user_filter.min_bathrooms <= listing_parameters.min_bathrooms) and
         # Figure out dates (when is move in appropriate ?) this seems to be increadibly negotiable
-        ((user_filter.move_in_date <= listing_parameters.move_in_date) or (user_filter.move_in_date is None)) and
-        ((user_filter.length_of_stay <= listing_parameters.length_of_stay) or (user_filter.length_of_stay is None)) and
-        (user_filter.gender == listing_parameters.gender)
+        #((user_filter.move_in_date >= listing_parameters.move_in_date) or (user_filter.move_in_date is None)) and
+        #((user_filter.length_of_stay <= listing_parameters.length_of_stay) or (user_filter.length_of_stay is None)) and
+        ((user_filter.gender == listing_parameters.gender) or user_filter.gender == "either") and
+        (user_filter.furnished == listing_parameters.furnished or (not user_filter.furnished)) and
+        (listing_parameters.neighbourhoods.all() in user_filter.neighbourhoods.all())
     )
 
 def send_aggregated_newsletter(user_email, listings):

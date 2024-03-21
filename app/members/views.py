@@ -6,6 +6,17 @@ from .models import CustomUser
 from newsletter.models import UserProfile
 from .forms import RegisterUserForm
 
+from .tokens import account_activation_token
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
 
 def delete_user(request):
     if request.method == "POST":
@@ -35,6 +46,7 @@ def logout_user(request):
     return redirect('newsletter:profile')
 
 
+
 def register_user(request):
     if request.method == "POST":
         form = RegisterUserForm(request.POST)
@@ -43,8 +55,29 @@ def register_user(request):
             email = form.cleaned_data['email']
             password = form.cleaned_data['password1']
             user = authenticate(username=email, password=password)
-            login(request, user)
-            messages.success(request, ("Registration Successful!"))
+            user.is_active = False
+            user.save()
+            # login(request, user)
+            # messages.success(request, ("Registration Successful!"))
+            current_site = get_current_site(request)
+            subject = 'Activate Your Account'
+            message = render_to_string('acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
+            })
+            send_mail(
+                subject,
+                message,
+                "from@example.com",
+                [email],
+                fail_silently=False,
+            )
+
+            # user.email_user(subject, message)
+
+            messages.success(request, ("Confirmation required: we sent an email to klazarevdev@gmail.com. Click the link there to finish subscribing"))
             return redirect('newsletter:profile')
         else:
             messages.success(request, ("There was an error signing up, Try Again..."))	
@@ -52,6 +85,24 @@ def register_user(request):
 
     return render(request, 'members/register_user.html', {'form':RegisterUserForm()})
 
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = CustomUser.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        return redirect('newsletter:profile')
+    else:
+        # Invalid link or token
+        return HttpResponse('Activation link is invalid!')
+    
 
 def change_password(request):
     if request.method == "POST":
