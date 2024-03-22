@@ -1,0 +1,68 @@
+{% extends "profile_base.html" %}
+{% block breadcrumb %}
+<div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title mb-4">Update Your Preferences</h3>
+      {% if form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {% for error in form.non_field_errors %}
+        {{ error }}
+        {% endfor %}
+      </div>
+      {% endif %}
+      
+      <form action="{% url 'newsletter:filters' %}" method="post" class="form-filter">
+        {% csrf_token %}
+        
+        <!-- Render each field except 'neighbourhoods' -->
+        <div class="form-filter-grouping">
+          <div class="form-group col">
+            {% for field in form %}
+              {% if field.name != "neighbourhoods" %}
+                <div class="form-group row">
+                  <label for="{{ field.id_for_label }}" class="col-sm-4 col-form-label">{{ field.label }}</label>
+                  <div>
+                    {{ field }}
+                    {% if field.help_text %}
+                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                    {% endif %}
+                  </div>
+                </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+          
+          {% include "newsletter/javascript_include.html" %}
+          <select id="id_neighbourhoods" multiple="multiple" name="neighbourhoods" style="display:none;">
+            {% for neighbourhood in form.neighbourhoods.field.queryset %}
+                <option value="{{ neighbourhood.id }}">{{ neighbourhood.name }}</option>
+            {% endfor %}
+          </select>
+
+          <!-- Custom rendering for 'neighbourhoods' -->
+          <div class="form-group col">
+            <div class="scrollable-container" style="max-height: 200px; overflow-y: auto;">
+              {% for neighbourhood in form.neighbourhoods.field.queryset %}
+              <div class="form-check">
+                <input type="checkbox" class="btn-check form-check-input" id="btncheck{{ neighbourhood.id }}" name="neighbourhoods" value="{{ neighbourhood.id }}" autocomplete="off" style="display:none;">
+                <label class="btn btn-outline-primary" for="btncheck{{ neighbourhood.id }}">{{ neighbourhood.name }}</label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% comment %} <div class="form-group col">
+            {% for neighbourhood in form.neighbourhoods.field.queryset %}
+                    <input type="checkbox" class="btn-check" id="btncheck{{ neighbourhood.id }}" value="{{ neighbourhood.id }}" autocomplete="off" style="display:none;">
+                    <label class="btn btn-outline-primary" for="btncheck{{ neighbourhood.id }}">{{ neighbourhood.name }}</label>    
+            {% endfor %}
+          </div> {% endcomment %}
+        </div>
+        
+
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary bg-success">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -46,11 +46,13 @@ body {
   color: #007bff;
 }
 
+.form-filter-grouping {
+  display: flex;
+  flex-direction: row;
+}
+
 .form-filter {
   background: #ffffff;
-  padding: 15px;
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .form-filter .form-group {
@@ -58,7 +60,6 @@ body {
 }
 
 .form-filter .btn-primary {
-  background-color: #007bff;
   border: none;
 }
 
@@ -89,10 +90,28 @@ body {
   background-blend-mode: screen; /* Use 'screen' to blend the gradients */
 }
 
-.profile-section {
-  display: none;
+.custom-checkbox-wrapper {
+  margin-bottom: 0.5rem; /* Spacing between checkboxes */
 }
-/* Initially show the first section or a default one */
-#personal-info {
-  display: block;
+
+.custom-checkbox-wrapper label {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox-wrapper input[type="checkbox"] {
+  margin-right: 0.5rem; /* Space between checkbox and label */
+}
+
+.profile-nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.scrollable-container {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid #afafaf;
+  border-radius: 5px;
+  padding: 10px;
 }

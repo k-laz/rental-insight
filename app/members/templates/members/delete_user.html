@@ -9,7 +9,7 @@
         <form action="{% url 'members:delete_user' %}" method="POST" class="d-flex justify-content-between align-items-center">
             {% csrf_token %}
             <button type="submit" class="btn btn-danger btn-lg">Delete Account</button>
-            <a href="{% url 'newsletter:profile' %}" class="btn btn-outline-secondary btn-lg">Back to Profile</a>
+            <a href="{% url 'newsletter:filters' %}" class="btn btn-outline-secondary btn-lg">Back to Profile</a>
         </form>  
     </div>
 </div>

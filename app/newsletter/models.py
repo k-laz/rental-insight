@@ -12,6 +12,7 @@ class Neighbourhood(models.Model):
 class Filter(models.Model):
     max_price = models.IntegerField(default=0)
     personal_bathroom = models.BooleanField(default=False)
+    full_place = models.BooleanField(default=False)
     furnished = models.BooleanField(default=False)
     min_beds = models.IntegerField(default=0)
     min_bathrooms = models.IntegerField(default=0)

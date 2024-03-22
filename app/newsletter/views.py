@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
-from app.newsletter.helpers import getUserFilter
+from .helpers import getUserFilter
 
 from members.models import CustomUser
 from .models import UserProfile, Filter, Listing, Neighbourhood
@@ -9,7 +9,7 @@ from django.contrib import messages
 from .forms import FilterForm
 from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
-from datetime import timedelta
+from django.utils.timezone import now, timedelta
 
 from django.urls import reverse
 
@@ -27,8 +27,6 @@ def filters(request):
     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
     user_filter = getattr(user_profile, 'filter', None)
 
-    user_neighbourhoods = []
-
     if request.method == 'POST':
         form = FilterForm(request.POST, instance=user_filter)
         if form.is_valid():
@@ -39,12 +37,14 @@ def filters(request):
             form.save_m2m()  # Needed for saving ManyToMany fields if commit=False
             
             messages.success(request, "Filter Updated!")
-            return redirect('newsletter:profile')
+            return redirect('newsletter:filters')
         else:
             messages.error(request, "Something went wrong with the form...")  # Use messages.error for errors
     else:
         form = FilterForm(instance=user_filter)
 
+    user_neighbourhoods = list(user_filter.neighbourhoods.values('id', 'name')) if user_filter else []
+    
     context = {
         "form": form,
         "all_neighbourhoods": Neighbourhood.objects.all(),
@@ -55,32 +55,42 @@ def filters(request):
 
 
 def listings(request):
-    user_filter = getUserFilter(request.user)
-    TIMEFRAMES = {'MONTH': 30, 'WEEK': 7, 'DAY': 1}
-    listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH'])
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    user_filter = getattr(user_profile, 'filter', None)
 
-    return render(request, 'listings.html', {"listings": listings})
+    # Default to 'month' if 'timeframe' is not specified in the GET request
+    selected_timeframe = request.GET.get('timeframe', 'month')
+    
+    # Define the timedelta for each timeframe
+    delta = {
+        'day': timedelta(days=1),
+        'week': timedelta(weeks=1),
+        'month': timedelta(days=30)
+    }
 
+    # Filter listings based on the selected timeframe
+    if selected_timeframe in delta:
+        time_threshold = now() - delta[selected_timeframe]
+        listings = get_matching_listings(user_filter, Listing.objects.filter(pub_date__gte=time_threshold))
+    else:
+        listings = Listing.objects.all()
 
-def profile(request):
-    breadcrumbs = [
-        ('Filters', reverse('newsletter:filters')),
-        ('Listings', reverse('newsletter:listings')),
-        # Additional breadcrumbs as needed
-    ]
+    # Pass the selected timeframe to the template via context
+    context = {
+        'listings': listings,
+        'selected_timeframe': selected_timeframe
+    }
+    return render(request, 'newsletter/listings.html', context)
 
-    return render(request, "newsletter/profile.html", {'breadcrumbs': breadcrumbs})
 
 
 # return a list of listings that matches the given filter (past month, past week, today)
-def get_matching_listings(search_filter, timeframe):
+def get_matching_listings(search_filter, listings):
     """
     Returns listings that match the given filter criteria.
     :param search_filter: An instance of the Filter model containing search criteria.
     :return: A queryset of Listing instances matching the search criteria.
     """
-    time_filter = timezone.now() - timedelta(days=timeframe)
-    listings = Listing.objects.filter(pub_date__gte=time_filter)
     res = []
     for listing in listings:
         if matches_user_filter(search_filter, listing.parameters):

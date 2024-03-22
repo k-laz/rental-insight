@@ -21,7 +21,7 @@ from django.http import HttpResponse
 def delete_user(request):
     if request.method == "POST":
         print("deleting user")
-        return redirect('newsletter:profile')
+        return redirect('newsletter:filters')
     return render(request, 'members/delete_user.html', {})
 
 
@@ -32,7 +32,7 @@ def login_user(request):
         user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
-            return redirect('newsletter:profile')
+            return redirect('newsletter:filters')
         else:
             messages.success(request, ("There Was An Error Logging In, Try Again..."))	
             return redirect('members:login_user')	
@@ -43,7 +43,7 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     messages.success(request, ("You Were Logged Out!"))
-    return redirect('newsletter:profile')
+    return redirect('newsletter:filters')
 
 
 
@@ -78,7 +78,7 @@ def register_user(request):
             # user.email_user(subject, message)
 
             messages.success(request, ("Confirmation required: we sent an email to klazarevdev@gmail.com. Click the link there to finish subscribing"))
-            return redirect('newsletter:profile')
+            return redirect('newsletter:filters')
         else:
             messages.success(request, ("There was an error signing up, Try Again..."))	
             return redirect('members:register_user')	
@@ -98,7 +98,7 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return redirect('newsletter:profile')
+        return redirect('newsletter:filters')
     else:
         # Invalid link or token
         return HttpResponse('Activation link is invalid!')
@@ -116,7 +116,7 @@ def change_password(request):
                 user.set_password(new_password)
                 user.save()
                 messages.success(request, "Your password has been updated successfully.")
-                return redirect("newsletter:profile")
+                return redirect("newsletter:filters")
             else:
                 messages.error(request, "The old password is incorrect.")
                 return render(request, 'members/change_password.html', {})  

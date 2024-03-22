@@ -10,19 +10,18 @@
       <a href="{% url 'members:logout_user' %}">Log out</a>
     </div>
 </div>
+<br/>
 <nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    {% for name, url in breadcrumbs %}
-      <li class="breadcrumb-item{% if forloop.last %} active{% endif %}" {% if not forloop.last %}aria-current="page"{% endif %}>
-        {% if url %}
-          <a href="{{ url }}">{{ name }}</a>
-        {% else %}
-          {{ name }}
-        {% endif %}
-      </li>
-    {% endfor %}
+  <ol class="breadcrumb" style="background-color: #f8f9fa; margin: 0px; padding-left: 5px;">
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'newsletter:filters' %}">Filters</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'newsletter:listings' %}">Listings</a>
+    </li>
   </ol>
 </nav>
+
 
 {% block breadcrumb %}{% endblock%}
   

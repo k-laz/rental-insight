@@ -14,7 +14,8 @@ class FilterForm(forms.ModelForm):
         self.fields['min_bathrooms'].label = 'Baths+'
         self.fields['gender'].label = 'Gender Preference'
         self.fields['furnished'].label = 'Furnished'
+        self.fields['full_place'].label = 'Full Place To Yourself'
         
     class Meta:
         model = Filter
-        fields = ['max_price', 'personal_bathroom', 'min_beds', 'min_bathrooms', 'gender', 'furnished', 'neighbourhoods'] # 'move_in_date', 'length_of_stay',
+        fields = ['max_price', 'min_beds', 'min_bathrooms', 'gender', 'personal_bathroom', 'full_place', 'furnished', 'neighbourhoods'] # 'move_in_date', 'length_of_stay',

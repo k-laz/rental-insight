@@ -32,9 +32,9 @@
           />
         </a>
         {% if user.is_authenticated %}
-          <a href="{% url 'newsletter:profile' %}" class="profile-link">Profile</a>
+          <a href="{% url 'newsletter:filters' %}" class="profile-link">Profile</a>
         {% else %}
-          <a href="{% url 'newsletter:profile' %}" class="profile-link">Login</a>
+          <a href="{% url 'newsletter:filters' %}" class="profile-link">Login</a>
         {% endif %}
         
       </header>
