@@ -1,5 +1,6 @@
 from django.http import HttpResponse
 from django.template import loader
+from app.newsletter.helpers import getUserFilter
 
 from members.models import CustomUser
 from .models import UserProfile, Filter, Listing, Neighbourhood
@@ -10,64 +11,65 @@ from django.contrib.auth.forms import UserCreationForm
 from django.utils import timezone
 from datetime import timedelta
 
+from django.urls import reverse
+
 import json
 
 
 def home(request):
     return render(request, 'home.html', {"form": UserCreationForm()})
 
-
-def profile(request):
+def filters(request):
+    # Redirect unauthenticated users
     if not request.user.is_authenticated:
-        return redirect('members:login_user') 
-        
-    try:
-        user_profile = UserProfile.objects.get(user=request.user)
-    except UserProfile.DoesNotExist:
-        user_profile = UserProfile.objects.create(user=request.user)
+        return redirect('members:login_user')
+    
+    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    user_filter = getattr(user_profile, 'filter', None)
 
-
-    try:
-        user_filter = user_profile.filter
-    except Filter.DoesNotExist:
-        user_filter = Filter()
+    user_neighbourhoods = []
 
     if request.method == 'POST':
         form = FilterForm(request.POST, instance=user_filter)
         if form.is_valid():
-            # This line saves the Filter instance and associates it with the user profile
-            user_profile.filter = form.save()
-            # TypeError Direct assignment to the forward side of a many-to-many set is prohibited. Use listings.set() instead.
-            # user_profile.listings = get_matching_listings(user_profile.filter)
-            user_profile.save()
-            messages.success(request, ("Filter Updated!"))
-            return redirect('newsletter:profile')  # Redirect to the profile page
-        else:
-            messages.success(request, ("Something went wrong with the form..."))
+            # Save Filter instance and potentially associate with UserProfile
+            user_filter = form.save(commit=False)
+            user_filter.user_profile = user_profile
+            user_filter.save()
+            form.save_m2m()  # Needed for saving ManyToMany fields if commit=False
+            
+            messages.success(request, "Filter Updated!")
             return redirect('newsletter:profile')
+        else:
+            messages.error(request, "Something went wrong with the form...")  # Use messages.error for errors
     else:
-        # get the form from user filter
-        # TODO: figure out how to do it for multiple filters
         form = FilterForm(instance=user_filter)
 
-    #listings = user_profile.listings.all()
-    TIMEFRAMES = {
-        'MONTH': 30,
-        'WEEK': 7,
-        'DAY': 1,
-    }
-    listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH']) if user_filter else []
-    user_neighbourhoods = list(user_filter.neighbourhoods.values('id', 'name')) if user_filter else []
-    
-    template = loader.get_template("newsletter/profile.html")
     context = {
-        "listings": listings,
         "form": form,
-        "user": user_profile.user,
-        "neighbourhoods": Neighbourhood.objects.all(),
-        "user_hoods": json.dumps(user_neighbourhoods)
+        "all_neighbourhoods": Neighbourhood.objects.all(),
+        "user_neighbourhoods": json.dumps(user_neighbourhoods),
     }
-    return HttpResponse(template.render(context, request))
+
+    return render(request, "newsletter/filters.html", context)
+
+
+def listings(request):
+    user_filter = getUserFilter(request.user)
+    TIMEFRAMES = {'MONTH': 30, 'WEEK': 7, 'DAY': 1}
+    listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH'])
+
+    return render(request, 'listings.html', {"listings": listings})
+
+
+def profile(request):
+    breadcrumbs = [
+        ('Filters', reverse('newsletter:filters')),
+        ('Listings', reverse('newsletter:listings')),
+        # Additional breadcrumbs as needed
+    ]
+
+    return render(request, "newsletter/profile.html", {'breadcrumbs': breadcrumbs})
 
 
 # return a list of listings that matches the given filter (past month, past week, today)
@@ -165,3 +167,54 @@ def send_aggregated_newsletter(user_email, listings):
 
 # This function sends an aggregated email to each user with all listings that matched their filter.
 # You would replace the print statement in send_aggregated_newsletter with your actual email sending logic.
+
+
+
+
+# def profile(request):
+#     # Redirect unauthenticated users
+#     if not request.user.is_authenticated:
+#         return redirect('members:login_user')
+    
+#     user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+#     user_filter = getattr(user_profile, 'filter', None)
+
+#     listings = []
+#     user_neighbourhoods = []
+
+#     if request.method == 'POST':
+#         form = FilterForm(request.POST, instance=user_filter)
+#         if form.is_valid():
+#             # Save Filter instance and potentially associate with UserProfile
+#             user_filter = form.save(commit=False)
+#             user_filter.user_profile = user_profile
+#             user_filter.save()
+#             form.save_m2m()  # Needed for saving ManyToMany fields if commit=False
+            
+#             messages.success(request, "Filter Updated!")
+#             return redirect('newsletter:profile')
+#         else:
+#             messages.error(request, "Something went wrong with the form...")  # Use messages.error for errors
+#     else:
+#         form = FilterForm(instance=user_filter)
+
+#     if user_filter:
+#         TIMEFRAMES = {'MONTH': 30, 'WEEK': 7, 'DAY': 1}
+#         listings = get_matching_listings(user_filter, TIMEFRAMES['MONTH'])
+#         user_neighbourhoods = list(user_filter.neighbourhoods.values('id', 'name'))
+
+#     breadcrumbs = [
+#         ('Filters', reverse('newsletter:filters')),
+#         ('Listings', reverse('newsletter:listings')),
+#         # Additional breadcrumbs as needed
+#     ]
+
+#     context = {
+#         "listings": listings,
+#         "form": form,
+#         "neighbourhoods": Neighbourhood.objects.all(),
+#         "user_hoods": json.dumps(user_neighbourhoods),
+#         'breadcrumbs': breadcrumbs,
+#     }
+
+#     return render(request, "newsletter/profile.html", context)

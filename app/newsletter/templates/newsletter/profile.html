@@ -1,6 +1,6 @@
 {% extends "base.html" %} 
 {% block content %}
-<div style="display: flex; align-items: center; justify-content: space-between;">
+<div class="profile-nav">
     <div>Welcome, <b>{{user.email}}</b>!</div>
     <div>
       <a href="{% url 'members:delete_user' %}">Delete Account</a>
@@ -10,9 +10,23 @@
       <a href="{% url 'members:logout_user' %}">Log out</a>
     </div>
 </div>
-<br/>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    {% for name, url in breadcrumbs %}
+      <li class="breadcrumb-item{% if forloop.last %} active{% endif %}" {% if not forloop.last %}aria-current="page"{% endif %}>
+        {% if url %}
+          <a href="{{ url }}">{{ name }}</a>
+        {% else %}
+          {{ name }}
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ol>
+</nav>
+
+{% block breadcrumb %}{% endblock%}
   
-  <h3>Filter</h3>
+ {% comment %} <h3>Filter</h3>
   {% include "./filter_form.html" %}
   <br />
   <h3>Matched Listings</h3>
@@ -22,5 +36,5 @@
     {% empty %}
       <p>No listings found.</p>
     {% endfor %}
-  </ul>
+  </ul> {% endcomment %}
 {% endblock%}
