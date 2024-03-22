@@ -5,6 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{% block title %}Rental Insight{% endblock %}</title>
+
+
     <link
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
       rel="stylesheet"
@@ -20,26 +22,29 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
 
-  </head>
-  <body>
-    <div class="content-wrapper">
-      <header>
-        <a href="{% url 'newsletter:home' %}">
-          <img
-            src="{% static 'newsletter/images/logo.png' %}"
-            alt="Logo"
-            height="65"
-          />
-        </a>
-        {% if user.is_authenticated %}
-          <a href="{% url 'newsletter:filters' %}" class="profile-link">Profile</a>
-        {% else %}
-          <a href="{% url 'newsletter:filters' %}" class="profile-link">Login</a>
-        {% endif %}
-        
-      </header>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
-      {% block home_page%}{% endblock %}
+    
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <header>
+      <a href="{% url 'newsletter:home' %}">
+        <img
+          src="{% static 'newsletter/images/logo.png' %}"
+          alt="Logo"
+          height="65"
+        />
+      </a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'newsletter:filters' %}" class="profile-link">Profile</a>
+      {% else %}
+        <a href="{% url 'newsletter:filters' %}" class="profile-link">Login</a>
+      {% endif %}
+      
+    </header>
+    <main class="flex-shrink-0">
       <div class="container">
         {% if messages %}
           {% for message in messages %}
@@ -50,7 +55,8 @@
         {% endif %}
         {% block content%}{% endblock %}
       </div>
-    </div>
+      {% block home_page%}{% endblock %}
+    </main>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container text-center">
             <span class="text-muted">@ Rental Insight</span>
@@ -58,7 +64,6 @@
     </footer>
 
     <!-- Optional JavaScript and Bootstrap JS -->
-    {% comment %} <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script> {% endcomment %}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.6/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   </body>

@@ -23,7 +23,11 @@
 </nav>
 
 
-{% block breadcrumb %}{% endblock%}
+<div class="card shadow-sm">
+    <div class="card-body">
+      {% block breadcrumb %}{% endblock%}
+    </div>
+</div
   
  {% comment %} <h3>Filter</h3>
   {% include "./filter_form.html" %}
