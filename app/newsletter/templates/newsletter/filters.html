@@ -15,6 +15,36 @@
     <!-- Render each field except 'neighbourhoods' -->
     <div class="form-filter-grouping">
       <div class="form-group col">
+          {% for field in form %}
+              {% if field.name != "neighbourhoods" %}
+                  {% if field.field.widget.input_type == "checkbox" %}
+                      <!-- Render checkbox as a toggle button -->
+                      <div class="btn-group-toggle" data-toggle="buttons">
+                          <label class="btn btn-primary {% if field.value %}active{% endif %}">
+                              <input type="checkbox" id="{{ field.id_for_label }}" name="{{ field.name }}" autocomplete="off" {% if field.value %}checked{% endif %}>
+                              {{ field.label }}
+                          </label>
+                      </div>
+                      {% if field.help_text %}
+                          <small class="form-text text-muted">{{ field.help_text }}</small>
+                      {% endif %}
+                  {% else %}
+                      <!-- Render other types of fields normally -->
+                      <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+                          <label for="{{ field.id_for_label }}" class="col-sm-4 col-form-label">{{ field.label }}</label>
+                          <div class="col-sm-8">
+                              {{ field }}
+                              {% if field.help_text %}
+                              <small class="form-text text-muted">{{ field.help_text }}</small>
+                              {% endif %}
+                          </div>
+                      </div>
+                  {% endif %}
+              {% endif %}
+          {% endfor %}
+      </div>
+
+      {% comment %} <div class="form-group col">
         {% for field in form %}
           {% if field.name != "neighbourhoods" %}
             <div class="form-group row d-flex align-items-center"  style="margin: 0px;">
@@ -28,7 +58,7 @@
             </div>
           {% endif %}
         {% endfor %}
-      </div>
+      </div> {% endcomment %}
       
       {% include "newsletter/javascript_include.html" %}
       <select id="id_neighbourhoods" multiple="multiple" name="neighbourhoods" style="display:none;">
@@ -38,14 +68,26 @@
       </select>
 
       <!-- Custom rendering for 'neighbourhoods' -->
-      <div class="form-group col">
+      {% comment %} <div class="form-group col">
         <div class="scrollable-container">
           {% for neighbourhood in form.neighbourhoods.field.queryset %}
           <input type="checkbox" class="btn-check form-check-input" id="btncheck{{ neighbourhood.id }}" name="neighbourhoods" value="{{ neighbourhood.id }}" autocomplete="off" style="display:none;">
           <label class="btn btn-outline-primary" for="btncheck{{ neighbourhood.id }}">{{ neighbourhood.name }}</label>
           {% endfor %}
         </div>
+      </div> {% endcomment %}
+      <div class="form-group col">
+        <div class="scrollable-container">
+          <div class="btn-group-toggle" data-toggle="buttons">
+            {% for neighbourhood in form.neighbourhoods.field.queryset %}
+            <label class="btn btn-primary" for="btncheck{{ neighbourhood.id }}">
+              <input type="checkbox" autocomplete="off" id="btncheck{{ neighbourhood.id }}" value="{{ neighbourhood.id }}"> {{ neighbourhood.name }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
       </div>
+
     </div>
     
     <div class="mt-3">

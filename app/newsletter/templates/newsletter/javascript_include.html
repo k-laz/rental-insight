@@ -1,56 +1,54 @@
 <script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const savedNeighborhoods = JSON.parse('{{ user_neighbourhoods|safe }}');
-        const savedNeighborhoodIDs = savedNeighborhoods.map(neighborhood => neighborhood.id);
-        document.querySelectorAll('.btn-check').forEach(checkbox => {
-            const checkboxValue = parseInt(checkbox.value, 10);
-            if (savedNeighborhoodIDs.includes(checkboxValue)) {
-                checkbox.checked = true;
-                const label = document.querySelector(`label[for="${checkbox.id}"]`);
-                if (label) {
-                    label.classList.add('active');
-                }
+$(document).ready(function () {
+$(".btn").click(function(event) {
+    // Removes focus of the button.
+    $(this).blur();
+});
+});
+document.addEventListener('DOMContentLoaded', (event) => {
+    
+
+    const savedNeighborhoods = JSON.parse('{{ user_neighbourhoods|safe }}');
+    const savedNeighborhoodIDs = savedNeighborhoods.map(neighborhood => neighborhood.id);
+
+    // Directly add event listeners to checkboxes
+    document.querySelectorAll('.btn-check').forEach(checkbox => {
+        // Check if the checkbox should be checked based on saved neighborhoods
+        const checkboxValue = parseInt(checkbox.value, 10);
+        if (savedNeighborhoodIDs.includes(checkboxValue)) {
+            checkbox.checked = true;
+            const label = document.querySelector(`label[for="${checkbox.id}"]`);
+            if (label) {
+                label.classList.add('active');
             }
-        });
+        }
 
-
-        // Call syncCheckboxes to ensure the select element is updated to reflect the checkboxes
-        syncCheckboxes();
-
-
-        document.querySelectorAll('label[for^="btncheck"]').forEach(label => {
-            label.addEventListener('click', function() {
-                // This assumes the 'for' attribute correctly references a checkbox id.
-                let checkboxId = this.getAttribute('for');
-                let checkbox = document.getElementById(checkboxId);
-
-                // Wait for the default checkbox toggle action to complete.
-                setTimeout(() => {
-                    // Toggle 'active' class based on checkbox state.
-                    if (checkbox.checked) {
-                        this.classList.add('active');
-                    } else {
-                        this.classList.remove('active');
-                    }
-
-                    // Assuming syncCheckboxes is now a function using vanilla JS.
-                    syncCheckboxes();
-                }, 0);
-            });
+        // Listen for changes directly on the checkbox
+        checkbox.addEventListener('change', () => {
+            const label = document.querySelector(`label[for="${checkbox.id}"]`);
+            if (checkbox.checked) {
+                label.classList.add('active');
+            } else {
+                label.classList.remove('active');
+            }
+            syncCheckboxes();
         });
     });
 
-    function syncCheckboxes() {
-        // Assuming we're syncing to a select element with id 'id_neighbourhoods'.
-        let selectedOptions = [];
-        document.querySelectorAll('.btn-check:checked').forEach(checkbox => {
-            selectedOptions.push(checkbox.value);
-        });
+    // Initial sync to ensure select matches checkboxes
+    syncCheckboxes();
+});
 
-        let select = document.getElementById('id_neighbourhoods');
-        Array.from(select.options).forEach(option => {
-            option.selected = selectedOptions.includes(option.value);
-        });
-    }
+function syncCheckboxes() {
+    let selectedOptions = [];
+    document.querySelectorAll('.btn-check:checked').forEach(checkbox => {
+        selectedOptions.push(checkbox.value);
+    });
+
+    let select = document.getElementById('id_neighbourhoods');
+    Array.from(select.options).forEach(option => {
+        option.selected = selectedOptions.includes(option.value);
+    });
+}
 
 </script>
