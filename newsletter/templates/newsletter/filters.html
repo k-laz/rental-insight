@@ -1,0 +1,127 @@
+{% extends "profile_base.html" %}
+{% block breadcrumb %}
+<h3 class="card-title mb-4">Update Your Preferences</h3>
+  {% if form.non_field_errors %}
+  <div class="alert alert-danger" role="alert">
+    {% for error in form.non_field_errors %}
+    {{ error }}
+    {% endfor %}
+  </div>
+  {% endif %}
+  
+  
+  <form action="{% url 'newsletter:filters' %}" method="post" class="form-filter">
+    {% csrf_token %}
+
+    <div class="form-filter-grouping">
+      <div class="form-group col">
+
+        <!-- Price Selection -->
+        <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+          <label for="{{ form.price_limit.id_for_label }}" class="col-sm-2 col-form-label">{{ form.price_limit.label }}</label>
+          <div class="col-sm-6">
+                {{ form.price_limit }} <span id="{{ form.price_limit.id_for_label }}_value"></span>
+          </div>
+        </div>
+
+        <!-- Bedroom Selection -->
+        <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+          <label class="col-sm-2 col-form-label">Beds</label>
+          <div class="col-sm-5">
+            <div style="display: flex; ">{{ form.min_beds }}<p style="margin: 5px 20px 0px 20px; ">-</p>{{ form.max_beds }}</div>
+          </div>
+        </div>
+
+        <!-- Bathroom Selection -->
+        <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+          <label class="col-sm-2 col-form-label">Baths</label>
+          <div class="col-sm-5">
+            <div style="display: flex; ">{{ form.min_baths }}<p style="margin: 5px 20px 0px 20px; ">-</p>{{ form.max_baths }}</div>
+          </div>
+        </div>
+      
+        <!-- Move In Date Selection -->
+        <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+            <label for="{{ form.move_in_date.id_for_label }}" class="col-sm-2 col-form-label">{{ form.move_in_date.label }}</label>
+            <div class="col-sm-6">
+                {{ form.move_in_date }}
+            </div>
+        </div>
+
+        <!-- Length Of Stay Selection -->
+        {% load widget_tweaks %}
+        <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            {% for choice in form.length_of_stay.field.choices %}
+                <label class="btn btn-outline-primary">
+                    <input type="checkbox" name="{{ form.length_of_stay.name }}" id="btncheck_length_{{ forloop.counter }}"
+                          value="{{ choice.0 }}"
+                          {% if choice.0 in form.length_of_stay.value %}checked{% endif %}
+                          autocomplete="off"> {{ choice.1|capfirst }}
+                </label>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Gender Selection -->
+        <div class="form-group row d-flex align-items-center" style="margin: 0px;">
+          <div class="btn-group btn-group-toggle" data-toggle="buttons">
+              {% for choice in form.gender.field.choices %}
+                  <label class="btn btn-outline-primary">
+                      <input type="checkbox" name="{{ form.gender.name }}" id="btncheck_gender_{{ forloop.counter }}"
+                          value="{{ choice.0 }}"
+                          {% if choice.0 in form.gender.value %}checked{% endif %}
+                          autocomplete="off"> {{ choice.1|capfirst }}
+                  </label>
+              {% endfor %}
+          </div>
+        </div>
+
+        <!--Other Checkbox Selection -->
+        <div class="btn-group-toggle" data-toggle="buttons">
+          <label class="btn btn-outline-primary {% if form.personal_bathroom.value %}active{% endif %}">
+              <input type="checkbox" id="{{ form.personal_bathroom.id_for_label }}" name="{{ form.personal_bathroom.name }}" autocomplete="off" {% if form.personal_bathroom.value %}checked{% endif %}>
+              {{ form.personal_bathroom.label }}
+          </label>
+          <label class="btn btn-outline-primary {% if form.full_place.value %}active{% endif %}">
+              <input type="checkbox" id="{{ form.full_place.id_for_label }}" name="{{ form.full_place.name }}" autocomplete="off" {% if form.full_place.value %}checked{% endif %}>
+              {{ form.full_place.label }}
+          </label>
+          <label class="btn btn-outline-primary {% if form.furnished.value %}active{% endif %}">
+              <input type="checkbox" id="{{ form.furnished.id_for_label }}" name="{{ form.furnished.name }}" autocomplete="off" {% if form.furnished.value %}checked{% endif %}>
+              {{ form.furnished.label }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Neighbourhoods Selection -->
+      <select id="id_neighbourhoods" multiple="multiple" name="neighbourhoods" style="display:none;">
+        {% for neighbourhood in form.neighbourhoods.field.queryset %}
+            <option value="{{ neighbourhood.id }}">{{ neighbourhood.name }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Custom rendering for 'neighbourhoods' -->
+      <div class="form-group col">
+        <h5>Neighbourhoods</h5>
+        <div class="scrollable-container">
+          <div class="btn-group-toggle" data-toggle="buttons">
+            {% for neighbourhood in form.neighbourhoods.field.queryset %}
+            <label class="btn btn-outline-primary hood" for="btncheck_hood_{{ neighbourhood.id }}">
+                <input type="checkbox" class="btn-check" autocomplete="off" id="btncheck_hood_{{ neighbourhood.id }}" value="{{ neighbourhood.id }}"> {{ neighbourhood.name }}
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      {% comment %} <div class="form-group col">
+        <div id="mapid"></div>
+      </div> {% endcomment %}
+
+    </div>
+    
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary bg-success">Update</button>
+    </div>
+  </form>
+{% endblock %}

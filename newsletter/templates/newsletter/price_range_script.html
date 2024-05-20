@@ -1,0 +1,22 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const initValue = JSON.parse('{{ user_price_limit|safe }}');
+    var slider = document.getElementById("{{ form.price_limit.id_for_label }}");
+    var output = document.getElementById("{{ form.price_limit.id_for_label }}_value");
+
+    if (initValue == 8100) {
+        output.innerHTML = "No limit"; // Max
+    } else {
+        output.innerHTML = initValue + "$";
+    }
+
+    // Update the output text whenever the slider value changes
+    slider.oninput = function() {
+        if (this.value == 8100) {
+            output.innerHTML = "No limit"; // Max
+        } else {
+            output.innerHTML = this.value + "$";
+        }
+    }
+});
+</script>

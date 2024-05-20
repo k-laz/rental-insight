@@ -1,0 +1,10 @@
+{% extends "profile_base.html" %}
+
+{% block breadcrumb %}
+<h3 class="card-title mb-4">Settings</h3>
+<ul>
+    <li><a href="{% url 'members:delete_user' %}">Delete Account</a></li>
+    <li><a href="{% url 'password_change' %}">Change Password</a></li>
+    <li><a href="{% url 'members:logout_user' %}">Log out</a></li>
+</ul>
+{% endblock %}

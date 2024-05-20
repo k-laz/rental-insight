@@ -1,0 +1,56 @@
+<script>
+$(document).ready(function () {
+$(".btn").click(function(event) {
+    // Removes focus of the button.
+    $(this).blur();
+});
+}); 
+document.addEventListener('DOMContentLoaded', (event) => {
+    let savedNeighborhoods = [];
+    try {
+        savedNeighborhoods = JSON.parse('{{ user_neighbourhoods|safe }}');
+    } catch (error) {
+        console.error('Failed to parse neighborhoods:', error);
+    }
+    const savedNeighborhoodIDs = savedNeighborhoods.map((neighborhood) => neighborhood.id);
+    
+    document.querySelectorAll('.btn-check').forEach(checkbox => {
+        // Check if the checkbox should be checked based on saved neighborhoods
+        const checkboxValue = parseInt(checkbox.value, 10);
+        if (savedNeighborhoodIDs.includes(checkboxValue)) {
+            checkbox.checked = true;
+            const label = document.querySelector(`label[for="${checkbox.id}"]`);
+            if (label) {
+                label.classList.add('active');
+            }
+        }
+
+        // Listen for changes directly on the checkbox
+        checkbox.addEventListener('change', () => {
+            const label = document.querySelector(`label[for="${checkbox.id}"]`);
+            if (checkbox.checked) {
+                label.classList.add('active');
+            } else {
+                label.classList.remove('active');
+            }
+            syncCheckboxes();
+        });
+    });
+
+    // Initial sync to ensure select matches checkboxes
+    syncCheckboxes();
+});
+
+function syncCheckboxes() {
+    let selectedOptions = [];
+    document.querySelectorAll('.btn-check:checked').forEach(checkbox => {
+        selectedOptions.push(checkbox.value);
+    });
+
+    let select = document.getElementById('id_neighbourhoods');
+    Array.from(select.options).forEach(option => {
+        option.selected = selectedOptions.includes(option.value);
+    });
+}
+
+</script>

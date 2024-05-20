@@ -1,0 +1,23 @@
+{% extends "profile_base.html" %}
+
+{% block breadcrumb %}
+<h3 class="card-title mb-4">Matched Listings</h3>
+    <form action="{% url 'newsletter:listings' %}" method="GET" id="timeframeForm">
+        <select name="timeframe" class="form-select" onchange="this.form.submit()">
+            <option value="day" {% if selected_timeframe == 'day' %}selected{% endif %}>Today</option>
+            <option value="week" {% if selected_timeframe == 'week' %}selected{% endif %}>Past Week</option>
+            <option value="month" {% if selected_timeframe == 'month' %}selected{% endif %} >Past Month</option>
+        </select>
+    </form>
+</br>
+
+{% if listings %}
+<ul>
+    {% for listing in listings %}
+        <li>{{ listing.title }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+    <p>No listings found...</p>
+{% endif %}
+{% endblock %}

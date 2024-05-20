@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load static %}
+{% block home_page %}
+
+<style>
+  :root {
+    --background-image-url: url('{% static "newsletter/images/rental_building_2.jpg" %}');
+  }
+</style>
+
+
+{% if form.errors %}
+<div class="alert alert-warning" role="alert">
+  There was an error with your sign up... Please try again.
+</div>
+{% endif %}
+
+
+<div class="row align-items-center" style="min-height: 80vh; margin: 10px">
+    <div class="col-lg-6 text-center" style="margin-bottom: 10px;">
+      <h1>Be the first to know about housing in Vancouver!</h1>
+      <p class="my-4">
+        Looking for housing but tired of scrolling through Facebook groups? Sign up for our newsletter today to get
+        instant search results based on exactly what you are looking for.
+      </p>
+      <a class="btn btn-primary btn-lg" href="{% url 'members:register_user' %}" role="button">Get Exclusive Access</a>
+    </div>
+    <div class="col-lg-6">
+      <div class="image-fade-overlay"></div>
+    </div>
+  </div>
+
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% comment %} {% block title %}Password Changed{% endblock %} {% endcomment %}
+
+{% block content %}
+<p>{{msg}}</p>
+
+<a class="btn btn-primary" href="{% url 'newsletter:filters' %}" role="button">Back to Profile</a>
+{% endblock %}

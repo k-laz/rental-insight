@@ -1,0 +1,119 @@
+html {
+  height: 100%;
+}
+
+body {
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  flex: 1;
+}
+
+.footer {
+  position: relative;
+  bottom: 10px;
+  padding: 10px 0;
+  text-align: center;
+  width: 100%;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+}
+
+.profile-link {
+  margin-right: 20px;
+  margin-top: 15px;
+  text-decoration: none;
+  color: #000;
+  font-weight: bold;
+  font-size: 18px;
+  float: right;
+}
+
+.profile-link:hover {
+  color: #007bff;
+}
+
+.form-filter-grouping {
+  display: flex;
+  flex-direction: row;
+}
+
+/* styles.css */
+.image-fade-overlay {
+  position: relative;
+  min-height: 80vh;
+  background-image: var(--background-image-url);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.image-fade-overlay::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+      to top,
+      rgba(248, 249, 250, 0.8) 1%,
+      transparent 10%
+    ),
+    linear-gradient(to bottom, rgba(248, 249, 250, 0.8) 1%, transparent 10%),
+    linear-gradient(to left, rgba(248, 249, 250, 0.8) 1%, transparent 10%),
+    linear-gradient(to right, rgba(248, 249, 250, 0.8) 1%, transparent 10%);
+  background-blend-mode: screen; /* Use 'screen' to blend the gradients */
+}
+
+.custom-checkbox-wrapper {
+  margin-bottom: 0.5rem; /* Spacing between checkboxes */
+}
+
+.custom-checkbox-wrapper label {
+  display: flex;
+  align-items: center;
+}
+
+.custom-checkbox-wrapper input[type="checkbox"] {
+  margin-right: 0.5rem; /* Space between checkbox and label */
+}
+
+.profile-nav {
+  display: flex;
+  justify-content: space-between;
+}
+
+.scrollable-container {
+  max-height: 500px;
+  overflow-y: auto;
+  border-radius: 5px;
+  padding-top: 10px;
+}
+
+.btn-outline-primary {
+  border-color: #529cea;
+  margin-top: 5px;
+}
+.btn:hover {
+  /* background-color: #529cea; */
+  background-color: #fff;
+  color: #007bff;
+}
+
+.col {
+  padding-left: 0px;
+}
+
+.col-form-label {
+  padding-left: 0px;
+  padding-right: 0px;
+}

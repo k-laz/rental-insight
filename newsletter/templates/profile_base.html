@@ -1,0 +1,26 @@
+{% extends "base.html" %} 
+{% block content %}
+<div class="profile-nav">
+    <div>Welcome, <b>{{user.email}}</b>!</div>
+</div>
+<br/>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb" style="background-color: #f8f9fa; margin: 0px; padding-left: 5px;">
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'newsletter:filters' %}">Filters</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'newsletter:listings' %}">Listings</a>
+    </li>
+    <li class="breadcrumb-item" aria-current="page">
+      <a href="{% url 'newsletter:settings' %}">Settings</a>
+    </li>
+  </ol>
+</nav>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+      {% block breadcrumb %}{% endblock%}
+    </div>
+</div>
+{% endblock%}
