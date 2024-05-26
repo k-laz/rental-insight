@@ -17,7 +17,7 @@ SECURE_HSTS_PRELOAD = True
 
 
 
-ALLOWED_HOSTS = ['Rental-insight-env-1.eba-ftvhnq7b.us-west-2.elasticbeanstalk.com']
+ALLOWED_HOSTS = ['Rental-insight-env.eba-duu9rdim.us-west-2.elasticbeanstalk.com']
 
 
 # Production database settings
