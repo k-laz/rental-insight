@@ -1,4 +1,5 @@
 venv
+awsebcli-env
 .env
 .vscode
 # Elastic Beanstalk Files
