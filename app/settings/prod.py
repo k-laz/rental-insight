@@ -20,18 +20,18 @@ SECURE_HSTS_PRELOAD = True
 ALLOWED_HOSTS = ['dev-env-1.us-west-2.elasticbeanstalk.com']
 
 
-# Production database settings
-if 'RDS_HOSTNAME' in os.environ:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': os.environ['RDS_DB_NAME'],
-            'USER': os.environ['RDS_USERNAME'],
-            'PASSWORD': os.environ['RDS_PASSWORD'],
-            'HOST': os.environ['RDS_HOSTNAME'],
-            'PORT': os.environ['RDS_PORT'],
-        }
-    }
+DATABASES = {
+	"default": {
+		"ENGINE": "django.db.backends.postgresql",
+		"NAME": os.getenv('DB_NAME'),
+		"USER": os.getenv('DB_USER'),
+		"PASSWORD": os.getenv('DB_PASSWORD'),
+		"HOST": os.getenv('DB_HOST'),
+		"PORT": os.getenv('DB_PORT'),
+	}
+}
+
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'email-smtp.us-west-2.amazonaws.com'  
