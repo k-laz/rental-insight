@@ -3,3 +3,4 @@ awsebcli-env
 .env
 .vscode
 ri-ec2-keypair.pem
+__pycache__
