@@ -4,4 +4,4 @@ awsebcli-env
 .vscode
 ri-ec2-keypair.pem
 __pycache__
-app/staticfiles
+staticfiles

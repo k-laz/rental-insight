@@ -1,7 +1,7 @@
 from django.http import HttpResponse
 from members.models import CustomUser
 from .models import UserProfile, User_Filter, Listing, Neighbourhood
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import FilterForm
 from django.contrib.auth.forms import UserCreationForm
@@ -27,9 +27,22 @@ def filters(request):
     if not request.user.is_authenticated:
         return redirect('members:login_user')
     
-    user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+
+    if user_profile.filter:
+        user_filter = user_profile.filter
+        created = False
+    else:
+        # Create a new User_Filter instance and associate it with the UserProfile
+        user_filter = User_Filter.objects.create()
+        user_profile.filter = user_filter
+        user_profile.save()
+        created = True
+
+
+    # user_profile, _ = UserProfile.objects.get_or_create(user=request.user)
     # user_filter: User_Filter = getattr(user_profile, 'filter', None)
-    user_filter, created = User_Filter.objects.get_or_create(userprofile=user_profile)
+    # user_filter, created = User_Filter.objects.get_or_create(userprofile=user_profile)
 
 
 
